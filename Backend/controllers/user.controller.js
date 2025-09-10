@@ -21,7 +21,7 @@ const createUser=async(req,res)=>{
 		const response=await userSchema.findOne({email});
 
 		if(response){
-			return res.json({
+			return res.status(200).json({
 				success:true,
 				message:"Check Your Expenses..",
 				data:response
@@ -32,9 +32,10 @@ const createUser=async(req,res)=>{
 			name,email
 		});
 
-		return res.json({
+		return res.status(200).json({
 			success:true,
-			message:"Track Your Expenses."
+			message:"Track Your Expenses.",
+			data:data
 		})
 
 		

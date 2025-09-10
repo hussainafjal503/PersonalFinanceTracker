@@ -13,10 +13,12 @@ const UserSchema=new mongoose.Schema({
 	TotalAmmount:{
 		type:Number
 	},
-	ExpenseId:{
-		type:mongoose.Schema.Types.ObjectId,
-		ref:"Expense"
-	}
+	expenseId:[
+		{
+			type:mongoose.Schema.Types.ObjectId,
+			ref:"Expense"
+		}
+	]
 })
 
 module.exports=mongoose.model("UserSchema",UserSchema);
