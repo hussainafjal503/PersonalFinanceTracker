@@ -17,6 +17,9 @@ const Expense=new mongoose.Schema({
 	},
 	category:{
 		type:String
+	},
+	status:{
+		stype:String
 	}
 })
 

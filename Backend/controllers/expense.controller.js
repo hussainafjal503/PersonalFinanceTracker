@@ -20,6 +20,7 @@ const createExpense=async(req,res)=>{
 			amount,
 			date,
 			category,
+			status:"spend"
 		})
 
 		if(!response){
@@ -30,16 +31,7 @@ const createExpense=async(req,res)=>{
 		}
 
 		const data=await UserSchema.findById(_id);
-		if(amount<0){
 			data.amount=data.amount-amount;
-			
-		}
-
-		if(amount>0){
-			data.amount=data.amount+amount;
-			
-		}
-
 		data.expenseId.push(response._id);
 		await data.save();
 
@@ -50,6 +42,52 @@ const createExpense=async(req,res)=>{
 		})
 	}catch(err){
 		console.log("Error occured while creating Expense :",err);
+	}
+}
+
+
+const updateEarn=async(req,res)=>{
+	try{
+		const {title,amount,date,category}=req.body;
+		const {_id}=req.params;
+
+		if(!title || !amount || ! date || ! category){
+			return res.status(400).json({
+				success:false,
+				message:"Fields are Required.."
+			})
+		}
+
+		
+
+		const response=await Expense.create({
+			title,
+			amount,
+			date,
+			category,
+			status:"earned"
+		})
+
+		if(!response){
+			return res.status(500).json({
+				success:false,
+				message:"Unable to add expense, some Technical issue Occured.."
+			})
+		}
+
+		const data=await UserSchema.findById(_id);
+			data.amount=data.amount+amount;
+		data.expenseId.push(response._id);
+		await data.save();
+
+		return res.status(200).json({
+			success:true,
+			message:"Expense Added Successfully..",
+			data:response,
+		})
+
+	}catch(err){
+		console.log("Error occured while  adding Earn : ",err);
 	}
 }
 
@@ -106,6 +144,49 @@ const updateExpense=async(req,res)=>{
 
 const deleteExpense=async(req,res)=>{
 	try{
+		const {_id}=req.params;
+		const {userId}=req.body;
+
+		if(!_id || !userId){
+			return res.status(400).json({
+				success:false,
+				message:"ID not found"
+			})
+		}
+
+		const expenseData=await Expense.findById(_id);
+		const userData=await UserSchema.findByIdAndUpdate(userId,{
+
+			amount:amount+expenseData.amount,
+
+			$pull:{expenseId:{_id:_id}}},
+		{new:true}
+		)
+
+		if(!userData){
+			return res.status(500).json({
+				success:false,
+				message:"unable to delete"
+			})
+		}
+
+		
+
+		const response=await Expense.findByIdAndDelete(_id);
+		if(!response){
+			return res.status(500).json({
+				success:false,
+				message:"unable to delete"
+			})
+		}
+
+		return re.status(200).json({
+			success:true,
+			message:"Deleted Successfully..",
+			response
+		})
+
+
 
 	}catch(err){
 		console.log("Error occured while deleting Expenses : ",err); 
@@ -142,5 +223,6 @@ module.exports={
 	createExpense,
 	updateExpense,
 	deleteExpense,
-	getAllExpenses
+	getAllExpenses,
+	updateEarn
 }

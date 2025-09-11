@@ -4,6 +4,7 @@ const dbConnect=require('./config/dbConnect')
 const cors=require('cors');
 const bodyParser=require('body-parser')
 const userRouter=require('./routes/user.routes');
+const expenseRouter = require('./routes/expense.routes');
 require('dotenv').config();
 
 
@@ -18,6 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
 app.use('/api/v1/user',userRouter);
+app.use('/api/v1/expense',expenseRouter)
 
 
 
