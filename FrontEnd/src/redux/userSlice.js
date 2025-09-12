@@ -11,6 +11,7 @@ const userSlice=createSlice({
 			status:false,
 			loading:null,
 			message:null,
+			userData:null
 	},
 	reducers:{
 		createUserRequest:(state,action)=>{
@@ -25,6 +26,7 @@ const userSlice=createSlice({
 			state.name=action.payload.name;
 			state.email=action.payload.email;
 			state.message=action.payload.message;
+			state.userData=action.payload;
 
 		},
 		userFail:(state,action)=>{
