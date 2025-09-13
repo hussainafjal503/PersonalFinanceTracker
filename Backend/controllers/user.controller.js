@@ -3,7 +3,7 @@ const userSchema=require('../models/user.models');
 const createUser=async(req,res)=>{
 
 	try{
-		const {name,email}=req.body;
+		let {name,email}=req.body;
 
 		if(!name || !email){
 			return res.json({
@@ -17,6 +17,7 @@ const createUser=async(req,res)=>{
 			})
 		}
 
+		email=email.toLowerCase();
 
 		const response=await userSchema.findOne({email});
 
@@ -29,7 +30,7 @@ const createUser=async(req,res)=>{
 		}
 
 		const data=await userSchema.create({
-			name,email
+			name,email,TotalAmmount:0
 		});
 
 		return res.status(200).json({

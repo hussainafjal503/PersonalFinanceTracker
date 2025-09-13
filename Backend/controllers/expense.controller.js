@@ -3,8 +3,8 @@ const UserSchema=require('../models/user.models');
 
 const createExpense=async(req,res)=>{
 	try{
-		const {title,amount,date,category}=req.body;
-		const {_id}=req.params;
+		let {title,amount,date,category,userId}=req.body;
+		
 
 		if(!title || !amount || ! date || ! category){
 			return res.status(400).json({
@@ -13,7 +13,7 @@ const createExpense=async(req,res)=>{
 			})
 		}
 
-		
+		amount=Number(amount);
 
 		const response=await Expense.create({
 			title,
@@ -23,6 +23,8 @@ const createExpense=async(req,res)=>{
 			status:"spend"
 		})
 
+		// console.log(response);
+
 		if(!response){
 			return res.status(500).json({
 				success:false,
@@ -30,8 +32,11 @@ const createExpense=async(req,res)=>{
 			})
 		}
 
-		const data=await UserSchema.findById(_id);
-			data.amount=data.amount-amount;
+		const data=await UserSchema.findById(userId);
+		// console.log(data);
+		
+		
+		data.TotalAmmount=data.TotalAmmount-Number(amount);
 		data.expenseId.push(response._id);
 		await data.save();
 
@@ -48,8 +53,7 @@ const createExpense=async(req,res)=>{
 
 const updateEarn=async(req,res)=>{
 	try{
-		const {title,amount,date,category}=req.body;
-		const {_id}=req.params;
+		let {title,amount,date,category,userId}=req.body;
 
 		if(!title || !amount || ! date || ! category){
 			return res.status(400).json({
@@ -59,6 +63,7 @@ const updateEarn=async(req,res)=>{
 		}
 
 		
+		amount=Number(amount);
 
 		const response=await Expense.create({
 			title,
@@ -75,14 +80,14 @@ const updateEarn=async(req,res)=>{
 			})
 		}
 
-		const data=await UserSchema.findById(_id);
-			data.amount=data.amount+amount;
+		const data=await UserSchema.findById(userId);
+			data.TotalAmmount=data.TotalAmmount+Number(amount);
 		data.expenseId.push(response._id);
 		await data.save();
 
 		return res.status(200).json({
 			success:true,
-			message:"Expense Added Successfully..",
+			message:"Income Added Successfully..",
 			data:response,
 		})
 
@@ -95,7 +100,7 @@ const updateEarn=async(req,res)=>{
 const updateExpense=async(req,res)=>{
 	try{
 
-		const {title,amount,category,date,userId}=req.body;
+		let {title,amount,category,date,userId}=req.body;
 		const {_id}=req.params;
 
 		if(!title || !amount || !category || !date){
@@ -107,15 +112,16 @@ const updateExpense=async(req,res)=>{
 
 		const response=await Expense.findById(_id)
 		const userData=await UserSchema.findById(userId)
+		amount=Number(amount);
 
 		if(amount<response.amount){
-			let newAmount=response.amount-amount;
-			userData.amount=userData.amount+newAmount;
+			let newAmount=response.amount-Number(amount);
+			userData.TotalAmmount=userData.TotalAmmount+newAmount;
 		}
 
 		if(amount>response.amount){
 			let newAmount=amount-response.amount;
-			userData.amount=userData.amount-newAmount;
+			userData.TotalAmmount=userData.TotalAmmount-newAmount;
 		}
 
 		await userData.save();
@@ -197,9 +203,9 @@ const deleteExpense=async(req,res)=>{
 const getAllExpenses=async(req,res)=>{
 	try{
 
-		const {_id}=req.params;
+	const{id}=req.params;
 		
-		const response=await UserSchema.findById(_id).populate("Expense");
+		const response=await UserSchema.findById(id).populate("expenseId");
 		if(!response){
 			return res.status(500).json({
 				success:false,

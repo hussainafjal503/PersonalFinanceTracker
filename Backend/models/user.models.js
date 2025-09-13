@@ -11,7 +11,8 @@ const UserSchema=new mongoose.Schema({
 		required:true
 	},
 	TotalAmmount:{
-		type:Number
+		type:Number,
+		default:0
 	},
 	expenseId:[
 		{

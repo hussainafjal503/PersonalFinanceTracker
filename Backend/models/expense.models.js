@@ -19,7 +19,8 @@ const Expense=new mongoose.Schema({
 		type:String
 	},
 	status:{
-		stype:String
+		type:String,
+		default:"spend"
 	}
 })
 
