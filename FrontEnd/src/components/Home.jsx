@@ -36,7 +36,7 @@ function Home() {
   const { name, loading, message, status, userData } = useSelector(
     (state) => state.auth
   );
-  const { expenseMessage, spendAmount, earnedAmount } = useSelector(
+  const { expenseMessage, spendAmount, earnedAmount,response,data } = useSelector(
     (state) => state.expense
   );
   const inputHandler = (event) => {
@@ -70,22 +70,25 @@ function Home() {
   };
 
   useEffect(() => {
-    console.log(message || expenseMessage);
-    if (message || expenseMessage) {
+  
+    if (message || expenseMessage ) {
       Swal.fire({
         title: message || expenseMessage,
         icon: "success",
       });
     }
-  }, [message, expenseMessage]);
-  console.log(userData);
+  }, [message,expenseMessage]);
 
   useEffect(() => {
     if (window.innerWidth > 600) {
       setMenuButton(true);
     }
-    dispatch(getAllExpenseData(userData?._id));
-  }, [dispatch]);
+
+    if(status){
+
+      dispatch(getAllExpenseData(userData?._id));
+    }
+  },[status]);
 
   return (
     <div className="max-w-screen max-h-screen h-[900px] bg-zinc-700 ">
@@ -115,7 +118,7 @@ function Home() {
                   title: "Please Enter Your Details",
                   icon: "warning",
                 });
-                returnl;
+                return;
               }
 
               setExpenseAside("income");
@@ -170,7 +173,17 @@ function Home() {
             </div>
             {menu.map((item, index) => (
               <NavLink key={index} to={item.path}>
-                <button className="hover:bg-zinc-950 font-bold transition-all duration-300 cursor-pointer text-white py-4 w-full px-8">
+                <button
+                   onClick={() => {
+              if (!status) {
+                Swal.fire({
+                  title: "Please Enter Your Details",
+                  icon: "warning",
+                });
+                return;
+              }}}
+
+                className="hover:bg-zinc-950 font-bold transition-all duration-300 cursor-pointer text-white py-4 w-full px-8">
                   {item.title}
                 </button>
               </NavLink>
@@ -225,7 +238,7 @@ function Home() {
                     id="name"
                     placeholder="Enter Your Name"
                     name="name"
-                    className="rounded-md border border-gray-400 py-2 px-6 outline-none"
+                    className="rounded-md border border-gray-400 py-2 px-6 outline-none bg-transparent"
                     value={formData.name}
                     onChange={inputHandler}
                   />

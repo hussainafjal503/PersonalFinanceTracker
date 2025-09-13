@@ -17,6 +17,8 @@ const createUser=async(req,res)=>{
 			})
 		}
 
+		// console.log(name,email);
+		name=name.toLowerCase();
 		email=email.toLowerCase();
 
 		const response=await userSchema.findOne({email});
@@ -44,7 +46,6 @@ const createUser=async(req,res)=>{
 
 	}catch(err){
 		console.log("Error occured while creating user : ",err);
-
 	}
 
 }

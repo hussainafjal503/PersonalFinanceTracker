@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
 
 import {
   createExpenseDispatch,
   createEarnDispatch,
+  updateHandlerDispatch,
 } from "../redux/expenseSlice";
 
 import { useDispatch, useSelector } from "react-redux";
 
-function AsideForm({ setExpenseAside, expenseAside,update}) {
+function AsideForm({ setExpenseAside, expenseAside,update,setUpdate,updateId, setUpdateId}) {
   const expenseInitialDetail = {
     title: "",
     amount: "",
@@ -16,10 +18,14 @@ function AsideForm({ setExpenseAside, expenseAside,update}) {
   };
 
   const {userData}=useSelector(state=>state.auth);
+  const {data}=useSelector(state=>state.expense);
+  
 
   const [expenseFormData, setExpenseFormData] = useState(expenseInitialDetail);
   const [expenseLoading, setExpenseLoading] = useState(false);
   const dispatch = useDispatch();
+
+
 
   const expenseInputHandler = (e) => {
     const { name, value } = e.target;
@@ -63,10 +69,32 @@ function AsideForm({ setExpenseAside, expenseAside,update}) {
     } else if (expenseAside === "income") {
       dispatch(createEarnDispatch(data));
     } else {
+
+        expenseFormData.userId=userData._id;
+      let updatedData={
+        id:updateId,
+        expenseFormData
+
+      }
+
+      dispatch(updateHandlerDispatch(updatedData))
     }
     setExpenseFormData(expenseInitialDetail);
     setExpenseAside(null);
   };
+
+
+useEffect(() => {
+  if (!updateId) return;
+
+  const expenseEditData = data.find((item) => item._id === updateId);
+
+  if (expenseEditData) {
+    // console.log(expenseEditData);
+    setExpenseFormData(expenseEditData); 
+  }
+}, [updateId, data]);
+
 
   return (
     <div>
@@ -80,7 +108,12 @@ function AsideForm({ setExpenseAside, expenseAside,update}) {
         <div className="flex flex-col gap-6">
           <div className="relative">
             <button
-              onClick={() => setExpenseAside(null)}
+              onClick={() =>{ setExpenseAside(null)
+                  setExpenseFormData(expenseInitialDetail)
+                  setUpdate(false)
+                  setUpdateId(null);
+              }
+              }
               className="absolute top-0 right-4 font-bold text-lg cursor-pointer hover:text-red-500 transtion-all duration-200 "
             >
               X

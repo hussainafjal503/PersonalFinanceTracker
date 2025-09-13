@@ -10,7 +10,7 @@ const { model } = require('mongoose');
 
 
 expenseRouter.post('/add',createExpense);
-expenseRouter.post('/:id/edit',updateExpense);
+expenseRouter.put('/:id/edit',updateExpense);
 expenseRouter.delete('/:id/delete',deleteExpense);
 expenseRouter.get('/getAll/:id',getAllExpenses);
 expenseRouter.post('/updateAmount',updateEarn);
