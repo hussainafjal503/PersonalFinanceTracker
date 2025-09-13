@@ -46,6 +46,8 @@ const userSlice=createSlice({
 export const createUser=(data)=>async(dispatch)=>{
 	try{
 		dispatch(userSlice.actions.createUserRequest());
+
+		
 		
 		const response=await axios.post(`${BASE_URL}/api/v1/user/create-user`,data,
 			{
@@ -71,6 +73,25 @@ export const createUser=(data)=>async(dispatch)=>{
 		console.log("Error occured in creating user slice : ",Err);
 	}
 
+}
+
+
+export const getUserData=(data)=>async(dispatch)=>{
+	try{
+
+
+		if(!data){
+			return;
+		}
+		const response=await axios.get(`${BASE_URL}/api/v1/user/get-user-details/${data?._id}`);
+
+		if(!response) throw new Error("unable to fetch data ");
+		// console.log(response);
+		dispatch(userSlice.actions.userSuccess(response?.data?.data));
+
+	}catch(err){
+		console.error("Error occured ", err);
+	}
 }
 
 export default userSlice.reducer;

@@ -7,7 +7,7 @@ import AsideForm from "../components/AsideForm";
 
 import { createUser } from "../redux/userSlice";
 import { getAllExpenseData } from "../redux/expenseSlice";
-
+import {getUserData} from '../redux/userSlice'
 function Home() {
   const menu = [
     {
@@ -88,7 +88,14 @@ function Home() {
 
       dispatch(getAllExpenseData(userData?._id));
     }
-  },[status]);
+
+    
+  },[status,userData]);
+
+
+  useEffect(()=>{
+    dispatch(getUserData(userData));
+  },[userData]);
 
   return (
     <div className="max-w-screen max-h-screen h-[900px] bg-zinc-700 ">

@@ -51,8 +51,31 @@ const createUser=async(req,res)=>{
 }
 
 
+const getUserDetails=async(req,res)=>{
+	try{
+		const {id}=req.params;
+
+		const response=await userSchema.findById(id);
+		if(!response){
+			return res.status(400).json({
+				message:"unable to find Amount",
+				success:false
+			})
+		}
+
+		return res.status(200).json({
+			success:true,
+			message:"Amount fetched",
+			data:response
+		})
+
+	}catch(Err){
+		console.error("error occuredd while getting current amount ; ",Err);
+	}
+}
 
 
 
 
-module.exports=createUser;
+
+module.exports={createUser,getUserDetails}
