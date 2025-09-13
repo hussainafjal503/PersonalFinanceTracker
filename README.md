@@ -50,8 +50,8 @@ npm install
 # Run backend and frontend (open two terminals OR use terminal multiplexer)
 # Terminal 1: Backend
 cd ../Backend
-npm start
+node server.js
 
 # Terminal 2: Frontend
 cd ../FrontEnd
-npm start
+npm run dev
